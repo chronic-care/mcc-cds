@@ -7,6 +7,17 @@ include FHIRCommon version '4.0.1' called FC
 
 parameter AsOf DateTime default Now()
 
+/*
+ * Resource relationships
+ */
+
+define function GetId(uri String ):
+  Last(Split(uri, '/'))
+
+
+/*
+ * Report summary helpers
+ */
 define function ReportMostRecentLabResult(observations List<Observation>, displayName String):
   ReportLabObservation(MostRecent(observations), displayName)
 
@@ -36,16 +47,16 @@ define function PerformedWithin(procedures List<Procedure>, lookback System.Quan
   procedures P
     where end of FC.ToInterval(P.performed) on or after day of AsOf - lookback
 
-// Returns a list of observation view Tuples.
-define function ReportObservations(ObsList List<Observation>):
-  ObsList o
-    return {   // result decimal value
+define function ReportObservation(o FHIR.Observation, displayName String):
+  if (o is null or o.value is null or o.value.value is null) then null
+  else
+    {   // result decimal value
       Date:   ToString(FindDate(o)),
-      Name:   ConceptText(o.code),                                // display nanme
+      ConceptName:   ConceptText(o.code),                         // display nanme from code
+      DisplayName: displayName,                                   // patient-friendly display name
       Result: QuantityText(o.value as FHIR.Quantity),             // result value with units
       ResultValue: ToString((o.value as FHIR.Quantity).value)
     }
-    sort by Date asc
 
 define function ReportLabObservation(o FHIR.Observation, displayName String):
   if (o is null or o.value is null or o.value.value is null) then null

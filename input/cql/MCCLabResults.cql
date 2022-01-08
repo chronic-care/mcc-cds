@@ -8,7 +8,7 @@ include MCCConcepts called Cx
 
 context Patient
 
-// Includes a view summary tuple for each lab result data element in CKD minimum data set (MDS)
+// View summary tuple for each lab result data element in CKD minimum data set (MDS)
 define "CKD MDS Lab Result Summary": {
   DE.ReportMostRecentLabResult("eGFR Results", 'eGFR'),
   DE.ReportMostRecentLabResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
@@ -16,9 +16,19 @@ define "CKD MDS Lab Result Summary": {
   DE.ReportMostRecentLabResult("UACR Results", 'Urine Albumin Creatinine Ratio')
 }
 
+define "CVD Lab Result Summary": {
+  DE.ReportMostRecentLabResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
+  DE.ReportMostRecentLabResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
+  DE.ReportMostRecentLabResult("Triglyceride Results", 'Triglycerides')
+}
+
 define "Diabetes Lab Result Summary": {
   DE.ReportMostRecentLabResult("Hemoglobin A1C Results", 'Hemoglobin A1c %'),
   DE.ReportMostRecentLabResult("Triglyceride Results", 'Triglycerides')
+}
+
+define "Chronic Pain Lab Result Summary": {
+  
 }
 
 // Most recent FHIR Observation for each lab result data element.

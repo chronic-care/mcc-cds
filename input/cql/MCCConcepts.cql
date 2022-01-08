@@ -8,8 +8,6 @@ codesystem "Race": 'urn:oid:2.16.840.1.113883.6.238'
 
 // ## Value sets ##
 
-// Value sets from VSAC
-
 // Lab results
 valueset "Hemoglobin A1C": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.119'
 valueset "High Density Lipoprotein": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.135'
@@ -35,7 +33,6 @@ code "Left (qualifier value)": '7771000' from "SNOMEDCT" display 'Left (qualifie
 code "Right (qualifier value)": '24028007' from "SNOMEDCT" display 'Right (qualifier value)'
 
 code "Blood pressure": '85354-9' from "LOINC" display 'Blood pressure systolic and diastolic'
-code "Blood pressure, deprecated": '55284-4' from "LOINC" display 'Blood pressure systolic and diastolic'
 code "Systolic blood pressure": '8480-6' from "LOINC" display 'Systolic blood pressure'
 code "Diastolic blood pressure": '8462-4' from "LOINC" display 'Diastolic blood pressure'
 code "Heart rate": '8867-4' from "LOINC" display 'Heart rate'
