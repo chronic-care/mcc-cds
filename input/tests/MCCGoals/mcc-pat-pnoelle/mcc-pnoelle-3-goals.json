@@ -148,7 +148,8 @@
               "unit": "mmHg",
               "system": "http://unitsofmeasure.org",
               "code": "mm[Hg]"
-            }
+            },
+            "dueDate": "2022-02-01"
           }
         ],
         "expressedBy": {

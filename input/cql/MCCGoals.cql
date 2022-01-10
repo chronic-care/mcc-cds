@@ -12,7 +12,7 @@ define "Report Conditions with Goals":
   [Condition] condition
     let goals: HasGoals(condition)
     where exists(goals) return {
-        Name: DE.ConceptText(condition.code),
+        Condition: DE.ConceptText(condition.code),
         HasGoals: ReportGoals(goals)
     }
 
@@ -32,8 +32,17 @@ define function ReportGoals(goals List<Goal>):
 define function ReportGoal(goal Goal):
   {
     Description: DE.ConceptText(goal.description),
-    StartDate: ToString(goal.start as FHIR.date)
+    StartDate: ToString(goal.start as FHIR.date),
+    DueDate: ToString(DueDate(goal))
   }
+
+define function DueDate(goal Goal):
+  First(goal.target target
+    // TODO if due is Duration, add that quantity to startDate
+    let due: (target.due as FHIR.date).value
+    where due is not null
+      return due
+  )
 
 // Returns a list of Conditions that this Goal addresses
 define function AddressesConditions(goal Goal):

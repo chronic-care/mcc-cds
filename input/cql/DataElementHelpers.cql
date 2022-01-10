@@ -18,8 +18,26 @@ define function GetId(uri String ):
 /*
  * Report summary helpers
  */
+define function ReportConditions(conditions List<Condition>):
+  conditions C
+  return {
+    ReportCondition(C)
+  }
+
+define function ReportCondition(condition Condition):
+  {
+    Name: ConceptText(condition.code)
+  }
+
 define function ReportMostRecentLabResult(observations List<Observation>, displayName String):
   ReportLabObservation(MostRecent(observations), displayName)
+
+define function SelectActiveConditions(conditions List<Condition>):
+  conditions Cond
+    where (Cond.clinicalStatus ~ FC."active"
+          or Cond.clinicalStatus ~ FC."relapse"
+          or Cond.clinicalStatus ~ FC."recurrence")
+      and Cond.verificationStatus ~ FC."confirmed"
 
 define function SelectByStatus(observations List<Observation>):
   observations Obs
@@ -33,7 +51,7 @@ define function MostRecent(observations List<Observation>):
       sort by issued
   )
 
-define function MostRecent(procedures List<Procedure>):
+define function MostRecentProcedures(procedures List<Procedure>):
   First(
     procedures P
       sort by start of FC.ToInterval(performed)
