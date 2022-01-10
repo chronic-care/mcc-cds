@@ -18,6 +18,21 @@ define function GetId(uri String ):
 /*
  * Report summary helpers
  */
+
+ // Returns a list of display names for these resource, for simple reporting.
+define function DisplayNames(resources List<FHIR.Resource>):
+  resources R
+    return DisplayName(R)
+
+ // Returns a plain text display name for this FHIR resource.
+define function DisplayName(resource Resource):
+  Coalesce(
+    ConceptText((resource as Condition).code),
+    ConceptText((resource as Goal).description),
+    ConceptText((resource as MedicationRequest).medication as CodeableConcept),
+    ConceptText((resource as Observation).code)
+  )
+
 define function ReportConditions(conditions List<Condition>):
   conditions C
   return {
