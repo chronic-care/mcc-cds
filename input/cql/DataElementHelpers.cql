@@ -29,6 +29,18 @@ define function ReportCondition(condition Condition):
     Name: ConceptText(condition.code)
   }
 
+define function ReportMedications(medRequests List<MedicationRequest>):
+  medRequests M
+  return {
+    ReportMedication(M)
+  }
+
+define function ReportMedication(medReq MedicationRequest):
+  {
+    // TODO: support Medication reference
+    Name: ConceptText(medReq.medication as CodeableConcept)
+  }
+
 define function ReportMostRecentLabResult(observations List<Observation>, displayName String):
   ReportLabObservation(MostRecent(observations), displayName)
 
@@ -44,6 +56,10 @@ define function SelectByStatus(observations List<Observation>):
 	where Obs.status in {'final', 'amended', 'corrected', 'preliminary'}
 		and Obs.value is not null
     sort by issued
+
+define function SelectActiveMedications(medRequests List<MedicationRequest>):
+  medRequests MedReq
+    where MedReq.status in {'active'}
 
 define function MostRecent(observations List<Observation>):
   First(
