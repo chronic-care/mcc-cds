@@ -19,7 +19,7 @@ define function GetId(uri String ):
  * Report summary helpers
  */
 
- // Returns a list of display names for these resource, for simple reporting.
+ // Returns a list of display names for these resources, for simple reporting.
 define function DisplayNames(resources List<FHIR.Resource>):
   resources R
     return DisplayName(R)
@@ -33,31 +33,32 @@ define function DisplayName(resource Resource):
     ConceptText((resource as Observation).code)
   )
 
-define function ReportConditions(conditions List<Condition>):
+define function ReportConditions(conditions List<Condition>, category String):
   conditions C
-  return {
-    ReportCondition(C)
-  }
+    return ReportCondition(C, category)
+  
 
-define function ReportCondition(condition Condition):
+define function ReportCondition(condition Condition, category String):
   {
-    Name: ConceptText(condition.code)
+    Category: category,
+    ConceptName: ConceptText(condition.code),
+    OnsetDate: ToString(FindOnsetDate(condition)),
+    RecordedDate: ToString(condition.recordedDate)
   }
 
-define function ReportMedications(medRequests List<MedicationRequest>):
+define function ReportMedications(medRequests List<MedicationRequest>, category String):
   medRequests M
-  return {
-    ReportMedication(M)
-  }
+    return ReportMedication(M, category)
 
-define function ReportMedication(medReq MedicationRequest):
+define function ReportMedication(medReq MedicationRequest, category String):
   {
     // TODO: support Medication reference
-    Name: ConceptText(medReq.medication as CodeableConcept)
+    Category: category,
+    ConceptName: ConceptText(medReq.medication as CodeableConcept)
   }
 
-define function ReportMostRecentLabResult(observations List<Observation>, displayName String):
-  ReportLabObservation(MostRecent(observations), displayName)
+define function ReportMostRecentResult(observations List<Observation>, displayName String):
+  ReportObservation(MostRecent(observations), displayName)
 
 define function SelectActiveConditions(conditions List<Condition>):
   conditions Cond
@@ -96,6 +97,7 @@ define function PerformedWithin(procedures List<Procedure>, lookback System.Quan
   procedures P
     where end of FC.ToInterval(P.performed) on or after day of AsOf - lookback
 
+/*
 define function ReportObservation(o FHIR.Observation, displayName String):
   if (o is null or o.value is null or o.value.value is null) then null
   else
@@ -106,47 +108,48 @@ define function ReportObservation(o FHIR.Observation, displayName String):
       Result: QuantityText(o.value as FHIR.Quantity),             // result value with units
       ResultValue: ToString((o.value as FHIR.Quantity).value)
     }
+*/
 
-define function ReportLabObservation(o FHIR.Observation, displayName String):
+define function ReportObservation(o FHIR.Observation, displayName String):
   if (o is null or o.value is null or o.value.value is null) then null
   else
     {
-      Date:   ToString(FindDate(o)),
-      ConceptName:   ConceptText(o.code),                         // display nanme from code
       DisplayName: displayName,                                   // patient-friendly display name
+      ConceptName:   ConceptText(o.code),                         // display nanme from code
+      Date:   ToString(FindDate(o)),
       ResultText: QuantityText(o.value as FHIR.Quantity),         // result value with units
       ResultValue: System.Quantity { value: (o.value as FHIR.Quantity).value}.value,
       ResultUnits: (o.value as FHIR.Quantity).unit.value,
-      ReferenceRange: LabReferenceRange(o),
-      Interpretation: LabInterpretation(o),
-      Flag: LabReferenceRangeFlag(o)   // true if value out of range, else false
+      ReferenceRange: ReferenceRange(o),
+      Interpretation: Interpretation(o),
+      Flag: ReferenceRangeFlag(o)   // true if value out of range, else false
     }
 
-define function LabReferenceRange(o FHIR.Observation):
+define function ReferenceRange(o FHIR.Observation):
   if (o is null or o.referenceRange is null) then null
   else
     Coalesce(First(o.referenceRange.text),
-      ToString(LabReferenceRangeLow(o)) + ' - ' + ToString(LabReferenceRangeHigh(o))
+      ToString(ReferenceRangeLow(o)) + ' - ' + ToString(ReferenceRangeHigh(o))
     )
 
-define function LabReferenceRangeLow(o FHIR.Observation):
+define function ReferenceRangeLow(o FHIR.Observation):
   First(o.referenceRange).low.value
 
-define function LabReferenceRangeHigh(o FHIR.Observation):
+define function ReferenceRangeHigh(o FHIR.Observation):
   First(o.referenceRange).high.value
 
-define function LabReferenceRangeFlag(o FHIR.Observation):
-  if (o.value.value < LabReferenceRangeLow(o)
-      or o.value.value > LabReferenceRangeHigh(o)) then true
+define function ReferenceRangeFlag(o FHIR.Observation):
+  if (o.value.value < ReferenceRangeLow(o)
+      or o.value.value > ReferenceRangeHigh(o)) then true
   else false
 
-define function LabInterpretation(o FHIR.Observation):
+define function Interpretation(o FHIR.Observation):
   if (o.interpretation is not null) then
     Coalesce(First(o.interpretation.text), First(First(o.interpretation).coding.display))
   else if o.referenceRange is not null then
     // Derive interpretation from the reference range, return null if within normal range.
-    if o.value.value < LabReferenceRangeLow(o) then 'L'
-    else if o.value.value > LabReferenceRangeHigh(o) then 'H'
+    if o.value.value < ReferenceRangeLow(o) then 'L'
+    else if o.value.value > ReferenceRangeHigh(o) then 'H'
     else null
   else
     null
@@ -165,6 +168,13 @@ define function FindDate(Obs Observation):
     (Obs.effective as FHIR.Period)."end".value,
     (Obs.effective as FHIR.Period)."start".value,
     Obs.issued.value
+  )
+
+define function FindOnsetDate(Cond Condition):
+  Coalesce(
+    (Cond.onset as FHIR.dateTime).value,
+    (Cond.onset as FHIR.Period)."end".value,
+    (Cond.onset as FHIR.Period)."start".value
   )
 
 // Returns the first-found display text for a CodeableConcept, looking first at the `text` attribute, then the

@@ -9,13 +9,14 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each MedicationRequest data element
-define "Display Medication Summary": {
-    ACEi: DE.DisplayNames("ACEis and ARBs"),
-    ESA: DE.DisplayNames("Erythropoiesis Stimulating Agent"),
-    Iron: DE.DisplayNames("Iron Supplement"),
-    PhosBinders: DE.DisplayNames("Phosphate Binders"),
-    VitaminD: DE.DisplayNames("Vitamin D")
-}
+define "Display Medication Summary":
+  flatten {
+    DE.ReportMedications("ACEis and ARBs", 'ACEis and ARBs'),
+    DE.ReportMedications("Erythropoiesis Stimulating Agent", 'Erythropoiesis Stimulating Agent'),
+    DE.ReportMedications("Iron Supplement", 'IronSupplement'),
+    DE.ReportMedications("Phosphate Binders", 'Phosphate Binders'),
+    DE.ReportMedications("Vitamin D", 'Vitamin D')
+  }
 
 // FHIR MedicationRequest resources with active status.
 

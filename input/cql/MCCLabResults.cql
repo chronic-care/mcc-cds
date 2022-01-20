@@ -9,23 +9,26 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each lab result data element in CKD minimum data set (MDS)
-define "CKD MDS Lab Result Summary": {
-  DE.ReportMostRecentLabResult("eGFR Results", 'eGFR'),
-  DE.ReportMostRecentLabResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
-  DE.ReportMostRecentLabResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
-  DE.ReportMostRecentLabResult("UACR Results", 'Urine Albumin Creatinine Ratio')
-}
+define "CKD MDS Lab Result Summary": 
+  (List {
+    DE.ReportMostRecentResult("eGFR Results", 'eGFR'),
+    DE.ReportMostRecentResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
+    DE.ReportMostRecentResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
+    DE.ReportMostRecentResult("UACR Results", 'Urine Albumin Creatinine Ratio')
+  }) Result where Result is not null
 
-define "CVD Lab Result Summary": {
-  DE.ReportMostRecentLabResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
-  DE.ReportMostRecentLabResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
-  DE.ReportMostRecentLabResult("Triglyceride Results", 'Triglycerides')
-}
+define "CVD Lab Result Summary": 
+  (List {
+    DE.ReportMostRecentResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
+    DE.ReportMostRecentResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
+    DE.ReportMostRecentResult("Triglyceride Results", 'Triglycerides')
+  }) Result where Result is not null
 
-define "Diabetes Lab Result Summary": {
-  DE.ReportMostRecentLabResult("Hemoglobin A1C Results", 'Hemoglobin A1c %'),
-  DE.ReportMostRecentLabResult("Triglyceride Results", 'Triglycerides')
-}
+define "Diabetes Lab Result Summary": 
+  (List {
+    DE.ReportMostRecentResult("Hemoglobin A1C Results", 'Hemoglobin A1c %'),
+    DE.ReportMostRecentResult("Triglyceride Results", 'Triglycerides')
+  }) Result where Result is not null
 
 define "Chronic Pain Lab Result Summary": {
   

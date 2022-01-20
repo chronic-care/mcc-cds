@@ -9,12 +9,13 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each condition data element
-define "Display Conditions Summary": {
-    Anxiety: DE.DisplayNames("Anxiety Conditions"),
-    CKD: DE.DisplayNames("Chronic Kidney Disease Conditions"),
-    HTN: DE.DisplayNames("Hypertension Conditions"),
-    SDOH: DE.DisplayNames("Social Determinants of Health Conditions")
-}
+define "Display Conditions Summary": 
+  flatten {
+    DE.ReportConditions("Anxiety Conditions", 'Anxiety'),
+    DE.ReportConditions("Chronic Kidney Disease Conditions", 'Chronic Kidney Disease'),
+    DE.ReportConditions("Hypertension Conditions", 'Hypertension'),
+    DE.ReportConditions("Social Determinants of Health Conditions", 'Social Needs and Risks')
+  }
 
 // FHIR Condition resources for active|recurrence|relapse, confirmed conditions.
 

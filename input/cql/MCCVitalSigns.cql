@@ -9,16 +9,17 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each vital sign data element
-define "Vital Signs Summary": {
+define "Vital Signs Summary": 
+  (List {
 //   DE.ReportObservation(VitalSigns.BloodPressure, 'Blood Pressure'),
-  DE.ReportObservation(VitalSigns.BodyHeight, 'Height'),
-  DE.ReportObservation(VitalSigns.BodyWeight, 'Weight'),
-  DE.ReportObservation(VitalSigns.BodyMassIndex, 'BMI'),
-  DE.ReportObservation(VitalSigns.BodyTemperature, 'Temperature'),
-  DE.ReportObservation(VitalSigns.HeartRate, 'Heart Rate'),
-  DE.ReportObservation(VitalSigns.OxygenSaturation, 'Oxygen Saturation'),
-  DE.ReportObservation(VitalSigns.RespiratoryRate, 'Respiratory Rate')
-}
+    DE.ReportObservation(VitalSigns.BodyHeight, 'Height'),
+    DE.ReportObservation(VitalSigns.BodyWeight, 'Weight'),
+    DE.ReportObservation(VitalSigns.BodyMassIndex, 'BMI'),
+    DE.ReportObservation(VitalSigns.BodyTemperature, 'Temperature'),
+    DE.ReportObservation(VitalSigns.HeartRate, 'Heart Rate'),
+    DE.ReportObservation(VitalSigns.OxygenSaturation, 'Oxygen Saturation'),
+    DE.ReportObservation(VitalSigns.RespiratoryRate, 'Respiratory Rate')
+  }) Result where Result is not null
 
 // Most recent FHIR Observation for each vital sign data element.
 define VitalSigns: {
