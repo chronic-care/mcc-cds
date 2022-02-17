@@ -8,8 +8,12 @@ include MCCConcepts called Cx
 
 context Patient
 
-// View summary tuple for each MedicationRequest data element
-define "Display Medication Summary":
+// View summary tuple for each MedicationRequest data element.
+define MedicationSummary:
+  DE.ReportMedications(ActiveMedications, 'Active Medications')
+
+// View summary tuple for each MedicationRequest data element, grouped by MCC value sets.
+define MCCMedicationSummary:
   flatten {
     DE.ReportMedications("ACEis and ARBs", 'ACEis and ARBs'),
     DE.ReportMedications("Erythropoiesis Stimulating Agent", 'Erythropoiesis Stimulating Agent'),
@@ -17,6 +21,10 @@ define "Display Medication Summary":
     DE.ReportMedications("Phosphate Binders", 'Phosphate Binders'),
     DE.ReportMedications("Vitamin D", 'Vitamin D')
   }
+
+define ActiveMedications:
+  (DE.SelectActiveMedications([MedicationRequest])) M
+    sort by authoredOn.value descending
 
 // FHIR MedicationRequest resources with active status.
 

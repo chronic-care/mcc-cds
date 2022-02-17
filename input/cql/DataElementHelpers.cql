@@ -19,31 +19,54 @@ define function GetId(uri String ):
  * Report summary helpers
  */
 
- // Returns a list of display names for these resources, for simple reporting.
-define function DisplayNames(resources List<FHIR.Resource>):
-  resources R
-    return DisplayName(R)
+// displayName: Patient-friendly name for display, usually based on value set classifier.
+define function DataElement(resource Resource, displayName String): 
+  if (resource is null) then null
+  else
+  {
+    DisplayName: Coalesce(displayName, DisplayName(resource)),   
+    ConceptName: DisplayName(resource),
+    SortDate: SortDate(resource),
+    Resource: resource
+  }
 
- // Returns a plain text display name for this FHIR resource.
+// Returns a plain text display name for this FHIR resource.
 define function DisplayName(resource Resource):
   Coalesce(
     ConceptText((resource as Condition).code),
     ConceptText((resource as Goal).description),
     ConceptText((resource as MedicationRequest).medication as CodeableConcept),
-    ConceptText((resource as Observation).code)
+    ConceptText((resource as Observation).code),
+    ConceptText((resource as Procedure).code)
+  )
+
+// Returns a list of display names for these resources, for simple reporting and test logging.
+define function DisplayNames(resources List<FHIR.Resource>):
+  resources R
+    return DisplayName(R)
+
+// Returns a default sort date for this FHIR resource.
+define function SortDate(resource Resource):
+  Coalesce(
+    Coalesce(
+      FindOnsetDate(resource as Condition), (resource as Condition).recordedDate),
+      (resource as MedicationRequest).authoredOn,
+      FindDate(resource as Observation)
   )
 
 define function ReportConditions(conditions List<Condition>, category String):
   conditions C
     return ReportCondition(C, category)
   
-
 define function ReportCondition(condition Condition, category String):
   {
     Category: category,
     ConceptName: ConceptText(condition.code),
+    RecordedDate: ToString(condition.recordedDate),
+    AssertedDate: null, // TODO get date from extention; see US Core profile
     OnsetDate: ToString(FindOnsetDate(condition)),
-    RecordedDate: ToString(condition.recordedDate)
+    Notes: ToString(condition.note),
+    LearnMore: LearnMoreURL(condition.code)
   }
 
 define function ReportMedications(medRequests List<MedicationRequest>, category String):
@@ -54,12 +77,18 @@ define function ReportMedication(medReq MedicationRequest, category String):
   {
     // TODO: support Medication reference
     Category: category,
-    ConceptName: ConceptText(medReq.medication as CodeableConcept)
+    ConceptName: Coalesce(ConceptText(medReq.medication as CodeableConcept), (medReq.medication as Reference).display.value),
+    AuthoredOn: ToString(medReq.authoredOn),
+    Requester: medReq.requester.display.value,
+    DosageInstruction: Coalesce(First(medReq.dosageInstruction).text.value, First(medReq.dosageInstruction).patientInstruction.value),
+    Notes: ToString(medReq.note),
+    LearnMore: LearnMoreURL(medReq.medication as CodeableConcept)
   }
 
 define function ReportMostRecentResult(observations List<Observation>, displayName String):
   ReportObservation(MostRecent(observations), displayName)
 
+// BUG: this works in VSCode but returns null in JavaScript execution.
 define function SelectActiveConditions(conditions List<Condition>):
   conditions Cond
     where (Cond.clinicalStatus ~ FC."active"
@@ -71,7 +100,6 @@ define function SelectByStatus(observations List<Observation>):
   observations Obs
 	where Obs.status in {'final', 'amended', 'corrected', 'preliminary'}
 		and Obs.value is not null
-    sort by issued
 
 define function SelectActiveMedications(medRequests List<MedicationRequest>):
   medRequests MedReq
@@ -80,13 +108,19 @@ define function SelectActiveMedications(medRequests List<MedicationRequest>):
 define function MostRecent(observations List<Observation>):
   First(
     observations O
-      sort by issued
+      // Note: Cannot use FindDate() because execution engine cannot sort by result of a function.
+      sort by Coalesce(
+        (effective as FHIR.dateTime).value,
+        (effective as FHIR.instant).value,
+        (effective as FHIR.Period)."end".value,
+        (effective as FHIR.Period)."start".value,
+        issued.value) descending
   )
 
-define function MostRecentProcedures(procedures List<Procedure>):
+define function MostRecentProcedure(procedures List<Procedure>):
   First(
     procedures P
-      sort by start of FC.ToInterval(performed)
+      sort by start of FC.ToInterval(performed) descending
   )
 
 define function IssuedWithin(observations List<Observation>, lookback System.Quantity):
@@ -96,19 +130,6 @@ define function IssuedWithin(observations List<Observation>, lookback System.Qua
 define function PerformedWithin(procedures List<Procedure>, lookback System.Quantity):
   procedures P
     where end of FC.ToInterval(P.performed) on or after day of AsOf - lookback
-
-/*
-define function ReportObservation(o FHIR.Observation, displayName String):
-  if (o is null or o.value is null or o.value.value is null) then null
-  else
-    {   // result decimal value
-      Date:   ToString(FindDate(o)),
-      ConceptName:   ConceptText(o.code),                         // display nanme from code
-      DisplayName: displayName,                                   // patient-friendly display name
-      Result: QuantityText(o.value as FHIR.Quantity),             // result value with units
-      ResultValue: ToString((o.value as FHIR.Quantity).value)
-    }
-*/
 
 define function ReportObservation(o FHIR.Observation, displayName String):
   if (o is null or o.value is null or o.value.value is null) then null
@@ -122,8 +143,23 @@ define function ReportObservation(o FHIR.Observation, displayName String):
       ResultUnits: (o.value as FHIR.Quantity).unit.value,
       ReferenceRange: ReferenceRange(o),
       Interpretation: Interpretation(o),
-      Flag: ReferenceRangeFlag(o)   // true if value out of range, else false
+      Flag: ReferenceRangeFlag(o),   // true if value out of range, else false
+      Performer: First(o.performer).display.value,
+      Notes: ToString(o.note),
+      LearnMore: LearnMoreURL(o.code)
     }
+
+/// Returns an array of strings
+define function ToString(notes List<Annotation>):
+  notes N 
+    where N.text is not null
+    return N.text.value
+
+define function FindObservations(code FHIR.CodeableConcept):
+  if code is null or code.coding is null then null
+  else
+    [Observation] o
+      where o.code.coding[0].code = code.coding[0].code
 
 define function ReferenceRange(o FHIR.Observation):
   if (o is null or o.referenceRange is null) then null
@@ -148,8 +184,8 @@ define function Interpretation(o FHIR.Observation):
     Coalesce(First(o.interpretation.text), First(First(o.interpretation).coding.display))
   else if o.referenceRange is not null then
     // Derive interpretation from the reference range, return null if within normal range.
-    if o.value.value < ReferenceRangeLow(o) then 'L'
-    else if o.value.value > ReferenceRangeHigh(o) then 'H'
+    if o.value.value < ReferenceRangeLow(o) then 'Low'
+    else if o.value.value > ReferenceRangeHigh(o) then 'High'
     else null
   else
     null
@@ -193,3 +229,44 @@ define function QuantityText(q FHIR.Quantity):
   else if (q.unit is not null and q.unit.value != '{score}') then ToString(q.value.value) + ' ' + q.unit.value
   else if (q.code is not null and q.code.value != '{score}') then ToString(q.value.value) + ' ' + q.code.value
   else ToString(q.value.value)
+
+define function QuantityTextWithComparator(q FHIR.Quantity):
+  if (q is null) then null
+  else if (q.comparator is not null) then q.comparator.value + ' ' + QuantityText(q)
+  else QuantityText(q)
+
+/// Returns web URL for MedlinePlus content using resource system/code
+define function LearnMoreURL(concept FHIR.CodeableConcept):
+  if LearnMoreCode(concept) is not null then
+    'https://connect.medlineplus.gov/application?'
+      + 'mainSearchCriteria.v.cs=' + LearnMoreCode(concept).system
+      + '&mainSearchCriteria.v.c=' + LearnMoreCode(concept).code
+  else
+    null
+
+// Returns a System.Code with sytem and code parameters for querying MedlinePlus
+define function LearnMoreCode(concept FHIR.CodeableConcept):
+  First(
+    concept.coding c
+      let medlineCode: MedlinePlusCode(c)
+      where medlineCode is not null
+      return medlineCode
+  )
+
+define function MedlinePlusCode(c FHIR.Coding):
+  case
+    when c.system.value = 'http://loinc.org' or c.system.value = 'urn:oid:2.16.840.1.113883.6.1' then
+      System.Code { system: '2.16.840.1.113883.6.1', code: c.code.value, display: c.display.value }
+    when c.system.value = 'http://snomed.info/sct' or c.system.value = 'urn:oid:2.16.840.1.113883.6.96' then
+      System.Code { system: '2.16.840.1.113883.6.96', code: c.code.value, display: c.display.value }
+    when c.system.value = 'http://hl7.org/fhir/sid/icd-10-cm' or c.system.value = 'urn:oid:2.16.840.1.113883.6.90' then
+      System.Code { system: '2.16.840.1.113883.6.90', code: c.code.value, display: c.display.value }
+    when c.system.value = 'http://www.nlm.nih.gov/research/umls/rxnorm' or c.system.value = 'urn:oid:2.16.840.1.113883.6.88' then
+      System.Code { system: '2.16.840.1.113883.6.88', code: c.code.value, display: c.display.value }
+    when c.system.value = 'http://hl7.org/fhir/sid/ndc' or c.system.value = 'urn:oid:2.16.840.1.113883.6.69' then
+      System.Code { system: '2.16.840.1.113883.6.69', code: c.code.value, display: c.display.value }
+    when c.system.value = 'http://www.ama-assn.org/go/cpt' or c.system.value = 'urn:oid:2.16.840.1.113883.6.12' then
+      System.Code { system: '2.16.840.1.113883.6.12', code: c.code.value, display: c.display.value }
+    else
+      null
+  end

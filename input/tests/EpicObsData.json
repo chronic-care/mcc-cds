@@ -1,0 +1,174 @@
+[
+    {
+        "resourceType": "Observation",
+        "id": "eyPMWgv2u2RUfsV4p1lLKuUtqyPs2-QNi2zKvbTsFYtRByc6B.cSi1iVU5V2HOpX23",
+        "basedOn": [
+            {
+                "reference": "ServiceRequest/egf4KkhXmgeVWImXEEYH.CEE1ZgJG5SQy2vBX1HgvBCs3"
+            }
+        ],
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "laboratory",
+                        "display": "Laboratory"
+                    }
+                ],
+                "text": "Laboratory"
+            },
+            {
+                "coding": [
+                    {
+                        "system": "urn:oid:1.2.840.114350.1.13.0.1.7.10.798268.30",
+                        "code": "Lab",
+                        "display": "Lab"
+                    }
+                ],
+                "text": "Lab"
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "http://loinc.org",
+                    "code": "4548-4",
+                    "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+                },
+                {
+                    "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.768282",
+                    "code": "1558024",
+                    "display": "Hemoglobin A1C"
+                }
+            ],
+            "text": "Hemoglobin A1C"
+        },
+        "subject": {
+            "reference": "Patient/erXuFYUfucBZaryVksYEcMg3",
+            "display": "Lopez, Camila Maria"
+        },
+        "encounter": {
+            "reference": "Encounter/elMz2mwjsRvKnZiR.0ceTUg3",
+            "display": "Office Visit"
+        },
+        "effectiveDateTime": "2019-05-28T14:22:00Z",
+        "issued": "2019-05-28T14:22:41Z",
+        "valueQuantity": {
+            "value": 5.1
+        },
+        "specimen": {
+            "reference": "Specimen/e.n21kE9PMQ94vOo1lkT2XkN1av86guPxYsFU20qTQ1M3"
+        }
+    },
+    {
+        "resourceType": "Observation",
+        "id": "eFZ3OfME8vq6XUwJts7mrGlawamuliODJO0plpp5SNroZXM4jbnzTa0CzD5sDraoS3",
+        "status": "final",
+        "category": [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "vital-signs",
+                        "display": "Vital Signs"
+                    }
+                ],
+                "text": "Vital Signs"
+            }
+        ],
+        "code": {
+            "coding": [
+                {
+                    "system": "urn:oid:1.2.840.114350.1.13.0.1.7.2.707679",
+                    "code": "5",
+                    "display": "Blood Pressure"
+                },
+                {
+                    "system": "http://open.epic.com/FHIR/StructureDefinition/observation-flowsheet-id",
+                    "code": "tBdNYepLeojPG60x7nUx9kQ0",
+                    "display": "Blood Pressure"
+                },
+                {
+                    "system": "urn:oid:1.2.246.537.6.96",
+                    "code": "8462-4"
+                },
+                {
+                    "system": "urn:oid:1.2.246.537.6.96",
+                    "code": "8480-6"
+                },
+                {
+                    "system": "http://loinc.org",
+                    "code": "55284-4",
+                    "display": "Blood pressure systolic and diastolic"
+                },
+                {
+                    "system": "http://loinc.org",
+                    "code": "85354-9",
+                    "display": "Blood pressure panel with all children optional"
+                },
+                {
+                    "system": "http://loinc.org",
+                    "code": "8716-3",
+                    "display": "Vital signs"
+                }
+            ],
+            "text": "Blood Pressure"
+        },
+        "subject": {
+            "reference": "Patient/erXuFYUfucBZaryVksYEcMg3",
+            "display": "Lopez, Camila Maria"
+        },
+        "encounter": {
+            "reference": "Encounter/elMz2mwjsRvKnZiR.0ceTUg3",
+            "display": "Office Visit"
+        },
+        "effectiveDateTime": "2021-12-08T06:59:03Z",
+        "issued": "2021-12-08T07:09:37Z",
+        "performer": [
+            {
+                "reference": "Practitioner/exfo6E4EXjWsnhA1OGVElgw3",
+                "display": "User E"
+            }
+        ],
+        "component": [
+            {
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure"
+                        }
+                    ],
+                    "text": "Systolic blood pressure"
+                },
+                "valueQuantity": {
+                    "value": 142,
+                    "unit": "mm[Hg]",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mm[Hg]"
+                }
+            },
+            {
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure"
+                        }
+                    ],
+                    "text": "Diastolic blood pressure"
+                },
+                "valueQuantity": {
+                    "value": 76,
+                    "unit": "mm[Hg]",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mm[Hg]"
+                }
+            }
+        ]
+    }
+]

@@ -8,8 +8,21 @@ include MCCConcepts called Cx
 
 context Patient
 
+define LabResultSummary: 
+  (List {
+    DE.ReportMostRecentResult("Total Cholesterol Results", 'Total Cholesterol'),
+    DE.ReportMostRecentResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
+    DE.ReportMostRecentResult("Low Density Lipoprotein Results", 'LDL Cholesterol'),
+    DE.ReportMostRecentResult("Triglyceride Results", 'Triglycerides'),
+    DE.ReportMostRecentResult("Hemoglobin A1C Results", 'Hemoglobin A1c %'),
+    DE.ReportMostRecentResult("eGFR Results", 'Estimated GFR'),
+    DE.ReportMostRecentResult("Serum Albumin Results", 'Serum Albumin'),
+    DE.ReportMostRecentResult("Serum Creatinine Results", 'Serum Creatinine'),
+    DE.ReportMostRecentResult("UACR Results", 'Urine Albumin Creatinine Ratio')
+  }) Result where Result is not null
+
 // View summary tuple for each lab result data element in CKD minimum data set (MDS)
-define "CKD MDS Lab Result Summary": 
+define "CKD Lab Result Summary": 
   (List {
     DE.ReportMostRecentResult("eGFR Results", 'eGFR'),
     DE.ReportMostRecentResult("High Density Lipoprotein Results", 'HDL Cholesterol'),
@@ -34,22 +47,19 @@ define "Chronic Pain Lab Result Summary": {
   
 }
 
-// Most recent FHIR Observation for each lab result data element.
-define DiagnosticTests: {
-  A1C: DE.MostRecent("Hemoglobin A1C Results"),
-  eGFR: DE.MostRecent("eGFR Results"),
-  HDL: DE.MostRecent("High Density Lipoprotein Results"),
-  LDL: DE.MostRecent("Low Density Lipoprotein Results"),
-  UACR: DE.MostRecent("UACR Results")
-}
+// DataElement Tuple { DisplayName, ConceptName, SortDate, Resource }
+define "CKD Data Elements": 
+  (List {
+    DE.DataElement(DE.MostRecent("eGFR Results"), 'eGFR'),
+    DE.DataElement(DE.MostRecent("High Density Lipoprotein Results"), 'HDL Cholesterol'),
+    DE.DataElement(DE.MostRecent("Low Density Lipoprotein Results"), 'LDL Cholesterol'),
+    DE.DataElement(DE.MostRecent("UACR Results"), 'Urine Albumin Creatinine Ratio')
+  }) Result where Result is not null
 
-// Lab result FHIR Observations sorted in descending order by issue date.
+// Lab result FHIR Observations
 
-define "eGFR Results":
-  DE.SelectByStatus([Observation: Cx."Estimated Glomerular Filtration Rate"])
-
-define "Hemoglobin A1C Results":
-  DE.SelectByStatus([Observation: Cx."Hemoglobin A1C"])
+define "Total Cholesterol Results":
+  DE.SelectByStatus([Observation: Cx."Total Cholesterol"])
 
 define "High Density Lipoprotein Results":
   DE.SelectByStatus([Observation: Cx."High Density Lipoprotein"])
@@ -59,6 +69,18 @@ define "Low Density Lipoprotein Results":
 
 define "Triglyceride Results":
   DE.SelectByStatus([Observation: Cx."Triglyceride Blood Serum Plasma"])
+
+define "Hemoglobin A1C Results":
+  DE.SelectByStatus([Observation: Cx."Hemoglobin A1C"])
+
+define "eGFR Results":
+  DE.SelectByStatus([Observation: Cx."Estimated Glomerular Filtration Rate"])
+
+define "Serum Albumin Results":
+  DE.SelectByStatus([Observation: Cx."Serum Albumin"])
+
+define "Serum Creatinine Results":
+  DE.SelectByStatus([Observation: Cx."Serum Creatinine"])
 
 define "UACR Results":
   DE.SelectByStatus([Observation: Cx."Urine Albumin Creatinine Ratio"])

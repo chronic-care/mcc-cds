@@ -9,7 +9,14 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each condition data element
-define "Display Conditions Summary": 
+define ConditionSummary:
+  DE.ReportConditions(
+    // DE.SelectActiveConditions([Condition]),
+    [Condition],
+    'Active Conditions'
+  )
+
+define MCCConditionSummary: 
   flatten {
     DE.ReportConditions("Anxiety Conditions", 'Anxiety'),
     DE.ReportConditions("Chronic Kidney Disease Conditions", 'Chronic Kidney Disease'),

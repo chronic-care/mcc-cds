@@ -8,6 +8,55 @@ include MCCConcepts called Cx
 
 context Patient
 
+/*
+export interface GoalSummary {
+  Category?: string,
+  Description: string,
+  ExpressedBy?: string,
+  StartDate?: string,
+  Target?: GoalTarget[],
+  Notes?: string[],
+  Addresses?: ConditionSummary[],
+  LearnMore?: string
+}
+
+export interface GoalTarget {
+  DueDate?: string,
+  DisplayName?: string,
+  TargetValue?: string,
+  LastResult?: ObservationSummary,
+}
+*/
+
+define GoalSummary:
+  ReportGoals([Goal])
+
+define function ReportGoals(goals List<Goal>):
+  goals G
+    return ReportGoal(G)
+  
+define function ReportGoal(goal Goal):
+  {
+    Category: DE.ConceptText(goal.category[0]),   // TODO: array of categories
+    Description: DE.ConceptText(goal.description),
+    ExpressedBy: goal.expressedBy.display.value,
+    StartDate: ToString(goal.start),
+    Target: if goal.target is not null then ReportGoalTarget(goal.target) else null,
+    Addresses: if goal.addresses is not null then DE.ReportConditions(AddressesConditions(goal), null) else null,
+    Notes: DE.ToString(goal.note),
+    LearnMore: DE.LearnMoreURL(goal.target[0].measure),
+    Overdue: (goal.target[0].due as FHIR.date) before Today()
+  }
+
+define function ReportGoalTarget(targets List<FHIR.Goal.Target>):
+  (targets) target
+  return {
+    DueDate: ToString((target.due as FHIR.date).value),
+    DisplayName: DE.ConceptText(target.measure),
+    TargetValue: DE.QuantityTextWithComparator((target.detail as Quantity)),
+    LastResult: DE.ReportMostRecentResult(DE.FindObservations(target.measure), 'Goal Resul')
+  }
+
 define "Conditions with Goals":
   [Condition] condition
     where exists HasGoals(condition)
@@ -45,8 +94,8 @@ define "Display Conditions with Goals":
 
 // Returns a list of Conditions that this Goal addresses
 define function AddressesConditions(goal Goal):
-  goal.addresses GA
-    return ([Condition] C where C.id = DE.GetId(GA.reference))
+  flatten(goal.addresses GA
+    return ([Condition] C where C.id = DE.GetId(GA.reference)))
 
 // Returns a list of Observations that this Goal addresses
 define function AddressesObservations(goal Goal):
@@ -84,6 +133,7 @@ define function DueDate(goal Goal):
  * Helper functions for reporting and display.
  */
 
+/*
 define function ReportGoals(goals List<Goal>):
   goals goal
   return {
@@ -96,3 +146,4 @@ define function ReportGoal(goal Goal):
     StartDate: ToString(goal.start as FHIR.date),
     DueDate: ToString(DueDate(goal))
   }
+*/
