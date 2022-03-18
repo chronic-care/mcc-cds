@@ -9,9 +9,9 @@ include MCCConcepts called Cx
 context Patient
 
 // View summary tuple for each vital sign data element
-define "Vital Signs Summary": 
+define VitalSignsSummary: 
   (List {
-//   DE.ReportObservation(VitalSigns.BloodPressure, 'Blood Pressure'),
+    DE.ReportObservation(VitalSigns.BloodPressure, 'Blood Pressure'),
     DE.ReportObservation(VitalSigns.BodyHeight, 'Height'),
     DE.ReportObservation(VitalSigns.BodyWeight, 'Weight'),
     DE.ReportObservation(VitalSigns.BodyMassIndex, 'BMI'),

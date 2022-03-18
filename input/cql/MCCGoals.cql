@@ -29,7 +29,13 @@ export interface GoalTarget {
 */
 
 define GoalSummary:
-  ReportGoals([Goal])
+  ReportGoals(
+    "Active Goals" G sort by start descending
+  )
+
+define "Active Goals":
+  [Goal] G 
+    where G.lifecycleStatus in {'active'}
 
 define function ReportGoals(goals List<Goal>):
   goals G
@@ -41,21 +47,34 @@ define function ReportGoal(goal Goal):
     Description: DE.ConceptText(goal.description),
     ExpressedBy: goal.expressedBy.display.value,
     StartDate: ToString(goal.start),
-    Target: if goal.target is not null then ReportGoalTarget(goal.target) else null,
+    Target: if goal.target is not null then ReportGoalTargets(goal) else null,
     Addresses: if goal.addresses is not null then DE.ReportConditions(AddressesConditions(goal), null) else null,
     Notes: DE.ToString(goal.note),
     LearnMore: DE.LearnMoreURL(goal.target[0].measure),
-    Overdue: (goal.target[0].due as FHIR.date) before Today()
+    Overdue: DueDate(goal) before Today()
   }
 
-define function ReportGoalTarget(targets List<FHIR.Goal.Target>):
-  (targets) target
-  return {
-    DueDate: ToString((target.due as FHIR.date).value),
-    DisplayName: DE.ConceptText(target.measure),
-    TargetValue: DE.QuantityTextWithComparator((target.detail as Quantity)),
-    LastResult: DE.ReportMostRecentResult(DE.FindObservations(target.measure), 'Goal Resul')
-  }
+define function ReportGoalTargets(goal Goal):
+  if goal.target[0].measure ~ Cx."Systolic blood pressure" or goal.target[0].measure ~ Cx."Diastolic blood pressure" then
+    {{
+      DueDate: ToString(DueDate(goal)),
+      DisplayName: 'Blood Pressure',
+      TargetValue: 'below ' + ToString(((singleton from (goal.target T where (T.measure ~ Cx."Systolic blood pressure"))).detail as FHIR.Quantity).value)
+        + '/' + ToString(((singleton from (goal.target T where (T.measure ~ Cx."Diastolic blood pressure"))).detail as FHIR.Quantity).value) + ' mmHg',
+      // LastResult: DE.ReportMostRecentResult(DE.FindObservations(Cx."Blood pressure"))
+      LastResult: DE.ReportMostRecentResult(DE.FindObservations(goal.target[0].measure))
+    }}
+  else
+  (goal.target) target
+    return {
+      DueDate: ToString((target.due as FHIR.date).value),
+      DisplayName: DE.ConceptText(target.measure),
+      TargetValue: Coalesce(DE.QuantityTextWithComparator((target.detail as Quantity)),
+                    DE.RangeText(target.detail as FHIR.Range),
+                    DE.ConceptText(target.detail as CodeableConcept),
+                    (target.detail as FHIR.string).value),
+      LastResult: DE.ReportMostRecentResult(DE.FindObservations(target.measure))
+    }
 
 define "Conditions with Goals":
   [Condition] condition
@@ -128,22 +147,3 @@ define function DueDate(goal Goal):
     where due is not null
       return due
   )
-
-/*
- * Helper functions for reporting and display.
- */
-
-/*
-define function ReportGoals(goals List<Goal>):
-  goals goal
-  return {
-    ReportGoal(goal)
-  }
-
-define function ReportGoal(goal Goal):
-  {
-    Description: DE.ConceptText(goal.description),
-    StartDate: ToString(goal.start as FHIR.date),
-    DueDate: ToString(DueDate(goal))
-  }
-*/

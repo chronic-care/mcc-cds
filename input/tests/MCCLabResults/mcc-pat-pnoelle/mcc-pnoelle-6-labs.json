@@ -44,7 +44,7 @@
         "subject": {
           "reference": "Patient/mcc-pat-pnoelle"
         },
-        "effectiveDateTime": "2018-10-06",
+        "effectiveDateTime": "2018-10-06T12:50:55Z",
         "performer": [
           {
             "reference": "Practitioner/mcc-prac-carlson-john",
@@ -101,7 +101,7 @@
         "subject": {
           "reference": "Patient/mcc-pat-pnoelle"
         },
-        "effectiveDateTime": "2018-10-06",
+        "effectiveDateTime": "2018-10-06T12:52:54Z",
         "performer": [
           {
             "reference": "Practitioner/mcc-prac-carlson-john",

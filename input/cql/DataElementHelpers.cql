@@ -5,15 +5,12 @@ using FHIR version '4.0.1'
 include FHIRHelpers version '4.0.1'
 include FHIRCommon version '4.0.1' called FC
 
+codesystem "LOINC": 'http://loinc.org'
+code "Blood pressure": '85354-9' from "LOINC" display 'Blood pressure systolic and diastolic'
+code "Systolic blood pressure": '8480-6' from "LOINC" display 'Systolic blood pressure'
+code "Diastolic blood pressure": '8462-4' from "LOINC" display 'Diastolic blood pressure'
+
 parameter AsOf DateTime default Now()
-
-/*
- * Resource relationships
- */
-
-define function GetId(uri String ):
-  Last(Split(uri, '/'))
-
 
 /*
  * Report summary helpers
@@ -85,6 +82,9 @@ define function ReportMedication(medReq MedicationRequest, category String):
     LearnMore: LearnMoreURL(medReq.medication as CodeableConcept)
   }
 
+define function ReportMostRecentResult(observations List<Observation>):
+  ReportObservation(MostRecent(observations), null)
+
 define function ReportMostRecentResult(observations List<Observation>, displayName String):
   ReportObservation(MostRecent(observations), displayName)
 
@@ -96,14 +96,68 @@ define function SelectActiveConditions(conditions List<Condition>):
           or Cond.clinicalStatus ~ FC."recurrence")
       and Cond.verificationStatus ~ FC."confirmed"
 
-define function SelectByStatus(observations List<Observation>):
-  observations Obs
-	where Obs.status in {'final', 'amended', 'corrected', 'preliminary'}
-		and Obs.value is not null
-
 define function SelectActiveMedications(medRequests List<MedicationRequest>):
   medRequests MedReq
     where MedReq.status in {'active'}
+
+define function MostRecentProcedure(procedures List<Procedure>):
+  First(
+    procedures P
+      sort by start of FC.ToInterval(performed) descending
+  )
+
+define function PerformedWithin(procedures List<Procedure>, lookback System.Quantity):
+  procedures P
+    where end of FC.ToInterval(P.performed) on or after day of AsOf - lookback
+
+/*
+ * Helpers for Observation data elements.
+ */
+
+/// Tests only the first Coding in given CodeableConcept
+define function FindObservations(code FHIR.CodeableConcept):
+  if code is null or code.coding is null then null
+  else
+    [Observation] o
+      where o.code ~ FHIRHelpers.ToCode(code.coding[0])
+        or exists o.component c
+          where c.code ~ FHIRHelpers.ToCode(code.coding[0])
+
+define function ReportObservation(o FHIR.Observation, displayName String):
+  if o is null then null
+  else
+    {
+      DisplayName: displayName,                                   // patient-friendly display name
+      ConceptName:   ConceptText(o.code),                         // display nanme from code
+      Date:   ToString(FindDate(o)),
+      ResultText: ResultText(o),         // result value with units
+      ResultValue: if (o.value as FHIR.Quantity) is not null then System.Quantity { value: (o.value as FHIR.Quantity).value}.value else null,
+      ResultUnits: (o.value as FHIR.Quantity).unit.value,
+      ReferenceRange: ReferenceRange(o),
+      Interpretation: Interpretation(o),
+      Flag: ReferenceRangeFlag(o),   // true if value out of range, else false
+      Performer: First(o.performer).display.value,
+      Notes: ToString(o.note),
+      LearnMore: LearnMoreURL(o.code)
+    }
+
+define function ResultText(o Observation):
+  // If Blood pressure observation, then extract component values.
+  if o.code ~ "Blood pressure" then
+    ToString(((singleton from (o.component C where (C.code ~ "Systolic blood pressure"))).value as FHIR.Quantity).value)
+     + '/' + ToString(((singleton from (o.component C where (C.code ~ "Diastolic blood pressure"))).value as FHIR.Quantity).value) + ' mmHg'
+  else if o.value is FHIR.Quantity then
+    QuantityText(o.value as FHIR.Quantity)
+  else if o.value is CodeableConcept then
+    ConceptText(o.value as CodeableConcept)
+  else if o.value is FHIR.string then
+    o.value as FHIR.string
+  else
+    null
+
+define function SelectByStatus(observations List<Observation>):
+  observations Obs
+	where Obs.status in {'final', 'amended', 'corrected', 'preliminary'}
 
 define function MostRecent(observations List<Observation>):
   First(
@@ -117,49 +171,9 @@ define function MostRecent(observations List<Observation>):
         issued.value) descending
   )
 
-define function MostRecentProcedure(procedures List<Procedure>):
-  First(
-    procedures P
-      sort by start of FC.ToInterval(performed) descending
-  )
-
 define function IssuedWithin(observations List<Observation>, lookback System.Quantity):
   observations O
     where O.issued on or after day of AsOf - lookback
-
-define function PerformedWithin(procedures List<Procedure>, lookback System.Quantity):
-  procedures P
-    where end of FC.ToInterval(P.performed) on or after day of AsOf - lookback
-
-define function ReportObservation(o FHIR.Observation, displayName String):
-  if (o is null or o.value is null or o.value.value is null) then null
-  else
-    {
-      DisplayName: displayName,                                   // patient-friendly display name
-      ConceptName:   ConceptText(o.code),                         // display nanme from code
-      Date:   ToString(FindDate(o)),
-      ResultText: QuantityText(o.value as FHIR.Quantity),         // result value with units
-      ResultValue: System.Quantity { value: (o.value as FHIR.Quantity).value}.value,
-      ResultUnits: (o.value as FHIR.Quantity).unit.value,
-      ReferenceRange: ReferenceRange(o),
-      Interpretation: Interpretation(o),
-      Flag: ReferenceRangeFlag(o),   // true if value out of range, else false
-      Performer: First(o.performer).display.value,
-      Notes: ToString(o.note),
-      LearnMore: LearnMoreURL(o.code)
-    }
-
-/// Returns an array of strings
-define function ToString(notes List<Annotation>):
-  notes N 
-    where N.text is not null
-    return N.text.value
-
-define function FindObservations(code FHIR.CodeableConcept):
-  if code is null or code.coding is null then null
-  else
-    [Observation] o
-      where o.code.coding[0].code = code.coding[0].code
 
 define function ReferenceRange(o FHIR.Observation):
   if (o is null or o.referenceRange is null) then null
@@ -213,6 +227,19 @@ define function FindOnsetDate(Cond Condition):
     (Cond.onset as FHIR.Period)."start".value
   )
 
+/*
+ * General FHIR data helpers.
+ */
+
+define function GetId(uri String ):
+  Last(Split(uri, '/'))
+
+/// Returns an array of strings
+define function ToString(notes List<Annotation>):
+  notes N 
+    where N.text is not null
+    return N.text.value
+
 // Returns the first-found display text for a CodeableConcept, looking first at the `text` attribute, then the
 // `display` on each `coding` until it finds a non-null value.
 // @param c - a FHIR CodeableConcept to get text from
@@ -234,6 +261,17 @@ define function QuantityTextWithComparator(q FHIR.Quantity):
   if (q is null) then null
   else if (q.comparator is not null) then q.comparator.value + ' ' + QuantityText(q)
   else QuantityText(q)
+
+define function RangeText(r FHIR.Range):
+  if (r is null) then null
+  else if (r.low is not null and r.high is not null) then 'between ' + ToString(r.low.value.value) + ' and ' + ToString(r.high.value.value)
+  else if (r.low is not null and r.high is null) then 'above ' + ToString(r.low.value.value)
+  else if (r.low is null and r.high is not null) then 'below ' + ToString(r.high.value.value)
+  else null
+
+/*
+  Helper functions to construct URLs for MedLindPlus content.
+*/
 
 /// Returns web URL for MedlinePlus content using resource system/code
 define function LearnMoreURL(concept FHIR.CodeableConcept):

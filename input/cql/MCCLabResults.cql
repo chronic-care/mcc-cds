@@ -56,7 +56,7 @@ define "CKD Data Elements":
     DE.DataElement(DE.MostRecent("UACR Results"), 'Urine Albumin Creatinine Ratio')
   }) Result where Result is not null
 
-// Lab result FHIR Observations
+// Lists of Lab result FHIR Observations
 
 define "Total Cholesterol Results":
   DE.SelectByStatus([Observation: Cx."Total Cholesterol"])
