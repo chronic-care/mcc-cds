@@ -30,7 +30,7 @@ export interface GoalTarget {
 
 define GoalSummary:
   ReportGoals(
-    "Active Goals" G sort by start descending
+    "Active Goals" G sort by start.value descending
   )
 
 define "Active Goals":

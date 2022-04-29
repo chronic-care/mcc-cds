@@ -89,12 +89,13 @@ define function ReportMostRecentResult(observations List<Observation>, displayNa
   ReportObservation(MostRecent(observations), displayName)
 
 // BUG: this works in VSCode but returns null in JavaScript execution.
-define function SelectActiveConditions(conditions List<Condition>):
-  conditions Cond
-    where (Cond.clinicalStatus ~ FC."active"
-          or Cond.clinicalStatus ~ FC."relapse"
-          or Cond.clinicalStatus ~ FC."recurrence")
-      and Cond.verificationStatus ~ FC."confirmed"
+// define function SelectActiveConditions(conditions List<Condition>):
+//   conditions Cond
+//     where (Cond.clinicalStatus ~ FC."active"
+//           or Cond.clinicalStatus ~ FC."relapse"
+//           or Cond.clinicalStatus ~ FC."recurrence")
+//       and Cond.verificationStatus ~ FC."confirmed"
+//     sort by recordedDate.value descending
 
 define function SelectActiveMedications(medRequests List<MedicationRequest>):
   medRequests MedReq

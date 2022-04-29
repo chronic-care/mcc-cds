@@ -11,10 +11,22 @@ context Patient
 // View summary tuple for each condition data element
 define ConditionSummary:
   DE.ReportConditions(
-    // DE.SelectActiveConditions([Condition]),
-    [Condition],
-    'Active Conditions'
+    SelectActiveConditions([Condition]), 'Active Conditions'
   )
+
+// we currently select only 'active' conditions in the server query
+define function SelectActiveConditions(conditions List<Condition>):
+  [Condition] C
+    sort by Coalesce(recordedDate.value, (onset as FHIR.dateTime).value) descending
+
+// BUG: this works in VSCode but returns null in JavaScript execution.
+// define function SelectActiveConditions(conditions List<Condition>):
+//   conditions Cond
+//     where (Cond.clinicalStatus ~ FC."active"
+//           or Cond.clinicalStatus ~ FC."relapse"
+//           or Cond.clinicalStatus ~ FC."recurrence")
+//       and Cond.verificationStatus ~ FC."confirmed"
+//     sort by recordedDate.value descending
 
 define MCCConditionSummary: 
   flatten {
@@ -27,14 +39,14 @@ define MCCConditionSummary:
 // FHIR Condition resources for active|recurrence|relapse, confirmed conditions.
 
 define "Anxiety Conditions":
-  DE.SelectActiveConditions([Condition: Cx."Anxiety Conditions"])
+  SelectActiveConditions([Condition: Cx."Anxiety Conditions"])
 
 define "Chronic Kidney Disease Conditions":
-  DE.SelectActiveConditions([Condition: Cx."Chronic Kidney Disease Type or Cause"])
+  SelectActiveConditions([Condition: Cx."Chronic Kidney Disease Type or Cause"])
 
 define "Hypertension Conditions":
-  DE.SelectActiveConditions([Condition: Cx."Hypertension Conditions"])
+  SelectActiveConditions([Condition: Cx."Hypertension Conditions"])
 
 // Could use Condition.category for SDOH, but using code valueset for consistency with other MCC conditions.
 define "Social Determinants of Health Conditions":
-  DE.SelectActiveConditions([Condition: Cx."Social Determinants of Health Conditions"])
+  SelectActiveConditions([Condition: Cx."Social Determinants of Health Conditions"])
