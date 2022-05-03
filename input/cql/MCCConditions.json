@@ -480,6 +480,18 @@
                         "type" : "NamedTypeSpecifier"
                      }
                   }, {
+                     "name" : "Recorder",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "name" : "Asserter",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
                      "name" : "Notes",
                      "elementType" : {
                         "type" : "ListTypeSpecifier",
@@ -533,6 +545,18 @@
                         }
                      }, {
                         "name" : "OnsetDate",
+                        "elementType" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}String",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }, {
+                        "name" : "Recorder",
+                        "elementType" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}String",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }, {
+                        "name" : "Asserter",
                         "elementType" : {
                            "name" : "{urn:hl7-org:elm-types:r1}String",
                            "type" : "NamedTypeSpecifier"
@@ -1078,6 +1102,18 @@
                         "type" : "NamedTypeSpecifier"
                      }
                   }, {
+                     "name" : "Recorder",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "name" : "Asserter",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
                      "name" : "Notes",
                      "elementType" : {
                         "type" : "ListTypeSpecifier",
@@ -1129,6 +1165,18 @@
                         }
                      }, {
                         "name" : "OnsetDate",
+                        "elementType" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}String",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }, {
+                        "name" : "Recorder",
+                        "elementType" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}String",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }, {
+                        "name" : "Asserter",
                         "elementType" : {
                            "name" : "{urn:hl7-org:elm-types:r1}String",
                            "type" : "NamedTypeSpecifier"
@@ -1192,6 +1240,18 @@
                                  "type" : "NamedTypeSpecifier"
                               }
                            }, {
+                              "name" : "Recorder",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Asserter",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
                               "name" : "Notes",
                               "elementType" : {
                                  "type" : "ListTypeSpecifier",
@@ -1246,6 +1306,18 @@
                               }
                            }, {
                               "name" : "OnsetDate",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Recorder",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Asserter",
                               "elementType" : {
                                  "name" : "{urn:hl7-org:elm-types:r1}String",
                                  "type" : "NamedTypeSpecifier"
@@ -1329,6 +1401,18 @@
                                  "type" : "NamedTypeSpecifier"
                               }
                            }, {
+                              "name" : "Recorder",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Asserter",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
                               "name" : "Notes",
                               "elementType" : {
                                  "type" : "ListTypeSpecifier",
@@ -1407,6 +1491,18 @@
                                  "type" : "NamedTypeSpecifier"
                               }
                            }, {
+                              "name" : "Recorder",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Asserter",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
                               "name" : "Notes",
                               "elementType" : {
                                  "type" : "ListTypeSpecifier",
@@ -1480,6 +1576,18 @@
                               }
                            }, {
                               "name" : "OnsetDate",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Recorder",
+                              "elementType" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}String",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "name" : "Asserter",
                               "elementType" : {
                                  "name" : "{urn:hl7-org:elm-types:r1}String",
                                  "type" : "NamedTypeSpecifier"

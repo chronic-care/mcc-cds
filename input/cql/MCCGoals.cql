@@ -30,7 +30,7 @@ export interface GoalTarget {
 
 define GoalSummary:
   ReportGoals(
-    "Active Goals" G sort by start.value descending
+    "Active Goals" G sort by (start as FHIR.date).value descending
   )
 
 define "Active Goals":
@@ -48,7 +48,7 @@ define function ReportGoal(goal Goal):
     ExpressedBy: goal.expressedBy.display.value,
     StartDate: ToString(goal.start),
     Target: if goal.target is not null then ReportGoalTargets(goal) else null,
-    Addresses: if goal.addresses is not null then DE.ReportConditions(AddressesConditions(goal), null) else null,
+    Addresses: if goal.addresses is not null then DE.DataElements(AddressesResources(goal)) else null,
     Notes: DE.ToString(goal.note),
     LearnMore: DE.LearnMoreURL(goal.target[0].measure),
     Overdue: DueDate(goal) before Today()
@@ -101,25 +101,19 @@ define "Display Conditions with Goals":
         HasGoals: DE.DisplayNames(goals)
     }
 
-// define "Report Conditions with Goals":
-//   [Condition] condition
-//     let goals: HasGoals(condition),
-//         evidence: HasEvidence(condition)
-//     where exists(goals) return {
-//         Condition: DE.ConceptText(condition.code),
-//         HasEvidence: DE.DisplayNames(evidence),
-//         HasGoals: ReportGoals(goals)
-//     }
-
-// Returns a list of Conditions that this Goal addresses
-define function AddressesConditions(goal Goal):
+// Returns a list of Resources that this Goal addresses
+define function AddressesResources(goal Goal):
   flatten(goal.addresses GA
-    return ([Condition] C where C.id = DE.GetId(GA.reference)))
+    return CastToResources(([Condition] C where C.id = DE.GetId(GA.reference)))
+      union CastToResources(([Observation] C where C.id = DE.GetId(GA.reference)))
+  )
 
-// Returns a list of Observations that this Goal addresses
-define function AddressesObservations(goal Goal):
-  goal.addresses GA
-    return ([Observation] C where C.id = DE.GetId(GA.reference))
+// Takes a list of Condition, Observation, ServiceRequest, etc. and cast to List<Resource>
+//  to enable union into generalized List<Resource>
+//  Otherwise, union returns, e.g. list<choice<FHIR.Observation,FHIR.Condition>>)
+define function CastToResources(items List<Resource>):
+ items r
+  return r as Resource
 
 // Returns a list of Goals that address this Condition
 define function HasGoals(condition Condition):

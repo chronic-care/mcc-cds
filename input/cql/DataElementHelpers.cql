@@ -17,7 +17,7 @@ parameter AsOf DateTime default Now()
  */
 
 // displayName: Patient-friendly name for display, usually based on value set classifier.
-define function DataElement(resource Resource, displayName String): 
+define function DataElementSummary(resource Resource, displayName String): 
   if (resource is null) then null
   else
   {
@@ -27,14 +27,31 @@ define function DataElement(resource Resource, displayName String):
     Resource: resource
   }
 
+define function DataElement(resource Resource): 
+  if (resource is null) then null
+  else
+  {  
+    DisplayName: DisplayName(resource)
+    // Resource: resource
+  }
+
+// Returns a list of data element summaries for these resources.
+define function DataElements(resources List<FHIR.Resource>):
+  resources R
+    return DataElement(R)
+
 // Returns a plain text display name for this FHIR resource.
 define function DisplayName(resource Resource):
   Coalesce(
-    ConceptText((resource as Condition).code),
-    ConceptText((resource as Goal).description),
-    ConceptText((resource as MedicationRequest).medication as CodeableConcept),
-    ConceptText((resource as Observation).code),
-    ConceptText((resource as Procedure).code)
+    Coalesce(
+      // Coalesce is limited to 5 arguments
+      ConceptText((resource as Condition).code),
+      ConceptText((resource as Goal).description),
+      ConceptText((resource as MedicationRequest).medication as CodeableConcept),
+      ConceptText((resource as Observation).code),
+      ConceptText((resource as Procedure).code)
+    ),
+    ConceptText((resource as ServiceRequest).code)
   )
 
 // Returns a list of display names for these resources, for simple reporting and test logging.
@@ -61,10 +78,19 @@ define function ReportCondition(condition Condition, category String):
     ConceptName: ConceptText(condition.code),
     RecordedDate: ToString(condition.recordedDate),
     AssertedDate: null, // TODO get date from extention; see US Core profile
+    // http://hl7.org/fhir/StructureDefinition/condition-assertedDate (dateTime type)
     OnsetDate: ToString(FindOnsetDate(condition)),
+    Recorder: condition.recorder.display.value,
+    Asserter: condition.asserter.display.value,
     Notes: ToString(condition.note),
     LearnMore: LearnMoreURL(condition.code)
   }
+
+// Returns a list of Goals that address this Condition
+define function HasGoals(condition Condition):
+  [Goal] goal
+    where exists(goal.addresses GA
+      where condition.id = GetId(GA.reference))
 
 define function ReportMedications(medRequests List<MedicationRequest>, category String):
   medRequests M

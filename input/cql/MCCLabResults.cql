@@ -47,15 +47,6 @@ define "Chronic Pain Lab Result Summary": {
   
 }
 
-// DataElement Tuple { DisplayName, ConceptName, SortDate, Resource }
-define "CKD Data Elements": 
-  (List {
-    DE.DataElement(DE.MostRecent("eGFR Results"), 'eGFR'),
-    DE.DataElement(DE.MostRecent("High Density Lipoprotein Results"), 'HDL Cholesterol'),
-    DE.DataElement(DE.MostRecent("Low Density Lipoprotein Results"), 'LDL Cholesterol'),
-    DE.DataElement(DE.MostRecent("UACR Results"), 'Urine Albumin Creatinine Ratio')
-  }) Result where Result is not null
-
 // Lists of Lab result FHIR Observations
 
 define "Total Cholesterol Results":
