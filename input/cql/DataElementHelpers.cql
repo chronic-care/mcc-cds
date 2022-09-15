@@ -68,13 +68,16 @@ define function SortDate(resource Resource):
       FindDate(resource as Observation)
   )
 
-define function ReportConditions(conditions List<Condition>, category String):
+define function ReportConditions(conditions List<Condition>, category String, type String, commonName String):
   conditions C
-    return ReportCondition(C, category)
+    return ReportCondition(C, category, type, commonName)
   
-define function ReportCondition(condition Condition, category String):
+define function ReportCondition(condition Condition, category String, type String, commonName String):
   {
+    id: condition.id.value,
     Category: category,
+    ConditionType: type,
+    CommonName: commonName,
     ConceptName: ConceptText(condition.code),
     RecordedDate: ToString(condition.recordedDate),
     AssertedDate: null, // TODO get date from extention; see US Core profile

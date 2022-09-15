@@ -1,0 +1,29 @@
+{
+    "name": "mcc-cds",
+    "version": "0.5.0",
+    "private": true,
+    "dependencies": {
+        "@types/fhir": "^0.0.31",
+        "@types/node": "^14.0.0",
+        "@types/hapi": "^18.0.0",
+        "cql-exec-fhir": "^2.0.2",
+        "cql-execution": "^2.4.2",
+        "fhirclient": "^2.5.2"
+    },
+    "devDependencies": {
+        "@rescripts/cli": "^0.0.13",
+        "@rescripts/utilities": "^0.0.6",
+        "gh-pages": "^3.1.0",
+        "typescript": "^3.8.3",
+        "cql-exec-vsac": "^1.2.2",
+        "temp": "^0.9.1"
+    },
+    "scripts": {
+        "start": "rescripts start",
+        "build": "rescripts build",
+        "test": "rescripts test",
+        "eject": "rescripts eject",
+        "predeploy": "rescripts build",
+        "deploy": "gh-pages -d build"
+    }
+}
