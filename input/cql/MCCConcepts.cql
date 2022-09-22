@@ -8,7 +8,9 @@ codesystem "Race": 'urn:oid:2.16.840.1.113883.6.238'
 
 // ## Value sets ##
 
-// valueset "": 'http://cts.nlm.nih.gov/fhir/ValueSet/'
+// ******************************
+// Condition value sets
+// ******************************
 
 //
 // Arthritis Conditions
@@ -24,7 +26,7 @@ valueset "Rheumatoid Arthritis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.
 // Cardiovascular Conditions
 //
 valueset "Acute Coronary Syndromes": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.3157.2000.10'
-valueset "Acute Myocardial Infarction ": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.3011'
+valueset "Acute Myocardial Infarction": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.3011'
 valueset "American Heart Association Heart Failure Stage": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.581'
 valueset "Aneurysm": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.627'
 valueset "Angina": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.608'
@@ -67,17 +69,65 @@ valueset "Chronic Kidney Disease Type or Cause": 'http://cts.nlm.nih.gov/fhir/Va
 //
 // Diabetes Conditions
 //
-
+valueset "Acanthosis Nigricans": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.556'
+valueset "Amputated Limb (Not Traumatic)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.563'
+valueset "Blindness": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.115.12.1089'
+valueset "Cataract of the eye": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.498'
+valueset "Cellulitis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.533'
+valueset "Charcot Foot": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.531'
+valueset "Complication due to Diabetes Mellitus": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1537'
+valueset "Diabetic Coma": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.482'
+valueset "Diabetic Foot": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.523'
+valueset "Diabetic Foot Ulcer": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.526'
+valueset "Diabetic hand/ Diabetic cheiroarthropathy": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.535'
+valueset "Diabetic Neuropathy Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.33'
+valueset "Diabetic Peripheral Angiopathy": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.492'
+valueset "Diabetic Retinopathy": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.327'
+valueset "Dupuytren's Contracture": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.546'
+valueset "Emotional Distress caused by Chronic Condition": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.508'
+valueset "Eruptive Xanthomatosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.557'
+valueset "Gangrene": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.543'
+valueset "Gestational Diabetes": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1032.90'
+valueset "Hyperglycemic Hyperosmolar Nonketotic Syndrome HHNS": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.517'
+valueset "Hypoglycemia unawareness": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.514'
+valueset "Hypoglycemic event": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.513'
+valueset "Ketoacidosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.520'
+valueset "Maturity Onset Diabetes of the Young (MODY)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.420'
+valueset "Necrobiosis Lipoidica (Skin Lesions)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.540'
+valueset "Periodontitis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.560'
+valueset "Prediabetes (borderline diabetes)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.419'
+valueset "Rubeosis Iridis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.501'
+valueset "Scleroderma or Thick Skin Syndrome": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.549'
+valueset "Type 1 Diabetes": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.103.12.1020'
+valueset "Type II Diabetes": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.103.12.1021'
 
 //
 // Digestive System/Gastrointestinal Conditions
 //
 
-
 //
 // Dissimilar Conditions
 //
 
+//
+// Functional Health Conditions
+//
+
+//
+// Genitourinary Conditions
+//
+
+//
+// Hormonal Conditions
+//
+
+//
+// Infectious Disease Conditions
+//
+
+//
+// Long Covid Diagnosis Condition
+//
 
 //
 // Mental Health Conditions
@@ -96,6 +146,50 @@ valueset "Psychotic Depression": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.
 valueset "Seasonal Affective Disorder": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.684'
 valueset "Suicide Risk": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.693'
 
+//
+// Musculoskeletal Conditions
+//
+
+//
+// Nutrition / Metabolic Conditions
+//
+valueset "Alkaline Phosphatase Deficiency Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.93'
+valueset "Anemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.53'
+valueset "Familial Hypercholesterolemia": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1047.100'
+valueset "Gout": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.586'
+valueset "Hypercalcemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.60'
+valueset "Hyperkalemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.50'
+valueset "Hyperlipidemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.73'
+valueset "Hyperphosphatemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.66'
+valueset "Hypertriglyceridemia": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.742'
+valueset "Hyperuricemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.85'
+valueset "Hypoalbuminemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.47'
+valueset "Hypocalcemia Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.61'
+valueset "Malnutrition Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1517'
+valueset "Metabolic Acidosis Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.70'
+valueset "Metabolic syndrome": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1561'
+valueset "Obesity Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.36'
+valueset "Vitamin D Deficiency Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.90'
+
+//
+// Pain Conditions
+//
+valueset "Chronic Pain Conditions": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.76'
+valueset "Low Back Pain": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1558'
+valueset "Migraine": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1552'
+valueset "Chronic Tension-type Headache diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1555'
+valueset "Neuropathic Pain (Neuralgia)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.663'
+valueset "Phantom Pain": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.669'
+
+//
+// Respiratory Conditions
+//
+valueset "Asthma Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1472'
+valueset "Bronchiectasis Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1463'
+valueset "Chronic obstructive pulmonary disease (COPD) Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1466'
+valueset "Interstitial lung disease Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1469'
+valueset "Pulmonary embolism Diagnosis": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.1481'
+valueset "Sleep Apnea Disorders": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.102'
 
 //
 // Social Determinants of Health Conditions
@@ -103,8 +197,9 @@ valueset "Suicide Risk": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762
 valueset "Social Determinants of Health": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1196.788'
 
 
-
-// Lab results
+// ******************************
+// Lab result value sets
+// ******************************
 valueset "Total Cholesterol": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.139'
 valueset "High Density Lipoprotein": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1222.135'
 valueset "Low Density Lipoprotein": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.215'
@@ -116,7 +211,9 @@ valueset "Serum Creatinine": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.11
 valueset "Urine Albumin Creatinine Ratio": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.6929.2.1002'
 
 
-// Medication Requests
+// ******************************
+// Medication value sets
+// ******************************
 valueset "ACEis and ARBs": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1213.11'
 valueset "Erythropoiesis Stimulating Agent": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1196.307'
 valueset "Iron Supplement": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1196.308'
@@ -126,7 +223,9 @@ valueset "Vitamin D": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.
 
 //Iron Supplement
 
+// ******************************
 // ## Individual codes ##
+// ******************************
 
 // list individual codes from code systems used directly in the CQL logic. Individual codes are used when there is
 // a single code from a particular vocabulary standard used to represent a clinical concept. It is considered
