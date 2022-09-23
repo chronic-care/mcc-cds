@@ -596,12 +596,12 @@ define "Phantom Pain":
 
 define ReportRespiratoryConditions: 
   flatten {
-    DE.ReportConditions("Asthma Diagnosis", 'Respiratory Conditionsh', 'Asthma'),
-    DE.ReportConditions("Bronchiectasis Diagnosis", 'Respiratory Conditionsh', 'Lung Damage'),
-    DE.ReportConditions("Chronic obstructive pulmonary disease (COPD) Diagnosis", 'Respiratory Conditionsh', 'COPD'),
-    DE.ReportConditions("Interstitial lung disease Diagnosis", 'Respiratory Conditionsh', 'Interstitial Lung Damage'),
-    DE.ReportConditions("Pulmonary embolism Diagnosis", 'Respiratory Conditionsh', 'Lung Clot'),
-    DE.ReportConditions("Sleep Apnea Disorders", 'Respiratory Conditionsh', 'Sleep Apnea')
+    DE.ReportConditions("Asthma Diagnosis", 'Respiratory Conditions', 'Asthma'),
+    DE.ReportConditions("Bronchiectasis Diagnosis", 'Respiratory Conditions', 'Lung Damage'),
+    DE.ReportConditions("Chronic obstructive pulmonary disease (COPD) Diagnosis", 'Respiratory Conditions', 'COPD'),
+    DE.ReportConditions("Interstitial lung disease Diagnosis", 'Respiratory Conditions', 'Interstitial Lung Damage'),
+    DE.ReportConditions("Pulmonary embolism Diagnosis", 'Respiratory Conditions', 'Lung Clot'),
+    DE.ReportConditions("Sleep Apnea Disorders", 'Respiratory Conditions', 'Sleep Apnea')
   }
 
 define "Asthma Diagnosis":
@@ -627,7 +627,7 @@ define "Sleep Apnea Disorders":
 //
 
 define ReportSocialDeterminantsOfHealthConditions: 
-  DE.ReportConditions("Social Determinants of Health", 'Social Determinants of Health', 'Life(style) Problems')
+  DE.ReportConditions("Social Determinants of Health", 'Life(style) Problems', null)
 
 define "Social Determinants of Health":
   SelectActiveConditions([Condition: Cx."Social Determinants of Health"])
