@@ -68,19 +68,37 @@ define function SortDate(resource Resource):
       FindDate(resource as Observation)
   )
 
-define function ReportConditions(conditions List<Condition>, category String, valueset String, commonName String):
-  conditions C
-    return ReportCondition(C, category, valueset, commonName)
-  
+// Returns a list of Provenance for a resource
+define function ProvenanceOf(resource Resource):
+  [Provenance] P
+    where exists(P.target target
+      where resource.id = GetId(target.reference))
+
+define function ReportProvenance(resource Resource):
+  (ProvenanceOf(resource)) P
+    return {
+      Transmitter: ProvenanceTransmitter(P),
+      Author: ProvenanceAuthor(P)
+    }
+
+define function ProvenanceTransmitter(provenance Provenance):
+  (provenance.agent) A
+    where A.type.coding[0].code = 'transmitter'
+    return A.who.display.value
+
+define function ProvenanceAuthor(provenance Provenance):
+  (provenance.agent) A
+    where A.type.coding[0].code = 'author'
+    return A.who.display.value
+
 define function ReportConditions(conditions List<Condition>, category String, commonName String):
   conditions C
-    return ReportCondition(C, category, null, commonName)
+    return ReportCondition(C, category, commonName)
   
-define function ReportCondition(condition Condition, category String, valueset String, commonName String):
+define function ReportCondition(condition Condition, category String, commonName String):
   {
     id: condition.id.value,
     Category: category,
-    ConditionType: valueset,
     CommonName: commonName,
     ConceptName: ConceptText(condition.code),
     RecordedDate: ToString(condition.recordedDate),
@@ -90,6 +108,7 @@ define function ReportCondition(condition Condition, category String, valueset S
     Recorder: condition.recorder.display.value,
     Asserter: condition.asserter.display.value,
     Notes: ToString(condition.note),
+    Provenance: ReportProvenance(condition),
     LearnMore: LearnMoreURL(condition.code)
   }
 
@@ -112,6 +131,7 @@ define function ReportMedication(medReq MedicationRequest, category String):
     Requester: medReq.requester.display.value,
     DosageInstruction: Coalesce(First(medReq.dosageInstruction).text.value, First(medReq.dosageInstruction).patientInstruction.value),
     Notes: ToString(medReq.note),
+    Provenance: ReportProvenance(medReq),
     LearnMore: LearnMoreURL(medReq.medication as CodeableConcept)
   }
 
@@ -172,6 +192,7 @@ define function ReportObservation(o FHIR.Observation, displayName String):
       Flag: ReferenceRangeFlag(o),   // true if value out of range, else false
       Performer: First(o.performer).display.value,
       Notes: ToString(o.note),
+      Provenance: ReportProvenance(o),
       LearnMore: LearnMoreURL(o.code)
     }
 

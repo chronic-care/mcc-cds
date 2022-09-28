@@ -50,6 +50,7 @@ define function ReportGoal(goal Goal):
     Target: if goal.target is not null then ReportGoalTargets(goal) else null,
     Addresses: if goal.addresses is not null then DE.DataElements(AddressesResources(goal)) else null,
     Notes: DE.ToString(goal.note),
+    Provenance: DE.ReportProvenance(goal),
     LearnMore: DE.LearnMoreURL(goal.target[0].measure),
     Overdue: DueDate(goal) before Today()
   }
